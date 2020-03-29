@@ -2,6 +2,8 @@ package me.vendoor.schema.migration
 
 import me.vendoor.dragonball.library.migration.MigrationContext
 import me.vendoor.dragonball.library.schema.migration.MigrationScript
+import org.bson.BsonDocument
+import org.bson.BsonString
 
 class ExampleMigration : MigrationScript(
         version = "1.1.0",
@@ -12,14 +14,18 @@ class ExampleMigration : MigrationScript(
         """.trimIndent()
 ) {
     override fun migrate(context: MigrationContext) {
-        context.drop {
-            collection { "User" }
-        }
-
         context.create {
             collection {
-                name { "Customers" }
+                name { "Customer" }
             }
+        }
+
+        // You can query any collection and work with the documents.
+        val customerCollection = context.collection("Customer", BsonDocument::class.java)
+        customerCollection.insertOne(BsonDocument())
+
+        context.drop {
+            collection { "User" }
         }
     }
 }
